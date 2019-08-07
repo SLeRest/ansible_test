@@ -1,0 +1,21 @@
+---
+- name: run script powershell and put result in file
+  hosts: all
+  vars:
+    tmp: 'C:\tmp'
+    path_tmp: '{{ tmp }}\'
+    script_path_local: '{{ playbook_dir }}/scripts.ps1'
+    script_path_remote: '{{ path_tmp }}scripts.ps1'
+    result_file: '{{ playbook_dir }}/result/{{ inventory_hostname }}.txt'
+  tasks:
+    - name: Create tmp directory
+      win_shell: mkdir {{ tmp }} | Out-Null
+    - name: Copy script to remote windows
+      win_copy:
+        src: '{{ script_path_local }}'
+        dest: '{{ path_tmp }}'
+        ignore_errors: True
+    - name: Run script
+      win_shell: '{{ script_path_remote }}'
+    - name: Remove tmp directory
+      win_shell: rm '{{ tmp }}' -Force -Recurse

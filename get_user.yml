@@ -1,0 +1,8 @@
+---
+- name: get user
+  hosts: win
+  tasks:
+          - name: get user in json and put it in user.json
+            win_shell: net user
+            register: var
+          - local_action: copy content={{ var.stdout }} dest=/home/ubuntu/windows/user.json
